@@ -14,16 +14,190 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      categorias: {
+        Row: {
+          created_at: string
+          id: string
+          nome: string
+          slug: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          nome: string
+          slug: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          nome?: string
+          slug?: string
+        }
+        Relationships: []
+      }
+      contactos_whatsapp: {
+        Row: {
+          created_at: string
+          id: string
+          produto_id: string
+          produtor_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          produto_id: string
+          produtor_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          produto_id?: string
+          produtor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contactos_whatsapp_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contactos_whatsapp_produtor_id_fkey"
+            columns: ["produtor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      produtos: {
+        Row: {
+          categoria_id: string
+          created_at: string
+          data_disponibilidade: string
+          descricao: string | null
+          estado: Database["public"]["Enums"]["produto_estado"]
+          id: string
+          imagem_url: string | null
+          localizacao: string
+          nome: string
+          preco: number
+          produtor_id: string
+          quantidade: number
+          unidade: string
+        }
+        Insert: {
+          categoria_id: string
+          created_at?: string
+          data_disponibilidade?: string
+          descricao?: string | null
+          estado?: Database["public"]["Enums"]["produto_estado"]
+          id?: string
+          imagem_url?: string | null
+          localizacao: string
+          nome: string
+          preco: number
+          produtor_id: string
+          quantidade?: number
+          unidade?: string
+        }
+        Update: {
+          categoria_id?: string
+          created_at?: string
+          data_disponibilidade?: string
+          descricao?: string | null
+          estado?: Database["public"]["Enums"]["produto_estado"]
+          id?: string
+          imagem_url?: string | null
+          localizacao?: string
+          nome?: string
+          preco?: number
+          produtor_id?: string
+          quantidade?: number
+          unidade?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "produtos_categoria_id_fkey"
+            columns: ["categoria_id"]
+            isOneToOne: false
+            referencedRelation: "categorias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "produtos_produtor_id_fkey"
+            columns: ["produtor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          bio: string | null
+          created_at: string
+          id: string
+          localizacao: string
+          nome: string
+          telefone: string
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string
+          id: string
+          localizacao: string
+          nome: string
+          telefone: string
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string
+          id?: string
+          localizacao?: string
+          nome?: string
+          telefone?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "produtor" | "admin"
+      produto_estado: "Pendente" | "Disponível" | "Vendido" | "Rejeitado"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +324,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["produtor", "admin"],
+      produto_estado: ["Pendente", "Disponível", "Vendido", "Rejeitado"],
+    },
   },
 } as const
