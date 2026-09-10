@@ -10,33 +10,135 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedNovoProdutoRouteImport } from './routes/_authenticated/novo-produto'
+import { Route as AuthenticatedPainelRouteImport } from './routes/_authenticated/painel'
+import { Route as ProdutoresIdRouteImport } from './routes/produtores.$id'
+import { Route as ProdutosIndexRouteImport } from './routes/produtos.index'
+import { Route as ProdutosIdRouteImport } from './routes/produtos.$id'
+import { Route as AuthenticatedEditarProdutoIdRouteImport } from './routes/_authenticated/editar-produto.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedNovoProdutoRoute =
+  AuthenticatedNovoProdutoRouteImport.update({
+    id: '/novo-produto',
+    path: '/novo-produto',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedPainelRoute = AuthenticatedPainelRouteImport.update({
+  id: '/painel',
+  path: '/painel',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const ProdutoresIdRoute = ProdutoresIdRouteImport.update({
+  id: '/produtores/$id',
+  path: '/produtores/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProdutosIndexRoute = ProdutosIndexRouteImport.update({
+  id: '/produtos/',
+  path: '/produtos/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProdutosIdRoute = ProdutosIdRouteImport.update({
+  id: '/produtos/$id',
+  path: '/produtos/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedEditarProdutoIdRoute =
+  AuthenticatedEditarProdutoIdRouteImport.update({
+    id: '/editar-produto/$id',
+    path: '/editar-produto/$id',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/novo-produto': typeof AuthenticatedNovoProdutoRoute
+  '/painel': typeof AuthenticatedPainelRoute
+  '/produtores/$id': typeof ProdutoresIdRoute
+  '/produtos/$id': typeof ProdutosIdRoute
+  '/produtos/': typeof ProdutosIndexRoute
+  '/editar-produto/$id': typeof AuthenticatedEditarProdutoIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/novo-produto': typeof AuthenticatedNovoProdutoRoute
+  '/painel': typeof AuthenticatedPainelRoute
+  '/produtores/$id': typeof ProdutoresIdRoute
+  '/produtos/$id': typeof ProdutosIdRoute
+  '/produtos': typeof ProdutosIndexRoute
+  '/editar-produto/$id': typeof AuthenticatedEditarProdutoIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/_authenticated/novo-produto': typeof AuthenticatedNovoProdutoRoute
+  '/_authenticated/painel': typeof AuthenticatedPainelRoute
+  '/produtores/$id': typeof ProdutoresIdRoute
+  '/produtos/$id': typeof ProdutosIdRoute
+  '/produtos/': typeof ProdutosIndexRoute
+  '/_authenticated/editar-produto/$id': typeof AuthenticatedEditarProdutoIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/novo-produto'
+    | '/painel'
+    | '/produtores/$id'
+    | '/produtos/$id'
+    | '/produtos/'
+    | '/editar-produto/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/novo-produto'
+    | '/painel'
+    | '/produtores/$id'
+    | '/produtos/$id'
+    | '/produtos'
+    | '/editar-produto/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/_authenticated/novo-produto'
+    | '/_authenticated/painel'
+    | '/produtores/$id'
+    | '/produtos/$id'
+    | '/produtos/'
+    | '/_authenticated/editar-produto/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  ProdutoresIdRoute: typeof ProdutoresIdRoute
+  ProdutosIdRoute: typeof ProdutosIdRoute
+  ProdutosIndexRoute: typeof ProdutosIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +150,87 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/novo-produto': {
+      id: '/_authenticated/novo-produto'
+      path: '/novo-produto'
+      fullPath: '/novo-produto'
+      preLoaderRoute: typeof AuthenticatedNovoProdutoRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/painel': {
+      id: '/_authenticated/painel'
+      path: '/painel'
+      fullPath: '/painel'
+      preLoaderRoute: typeof AuthenticatedPainelRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/produtores/$id': {
+      id: '/produtores/$id'
+      path: '/produtores/$id'
+      fullPath: '/produtores/$id'
+      preLoaderRoute: typeof ProdutoresIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/produtos/': {
+      id: '/produtos/'
+      path: '/produtos'
+      fullPath: '/produtos/'
+      preLoaderRoute: typeof ProdutosIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/produtos/$id': {
+      id: '/produtos/$id'
+      path: '/produtos/$id'
+      fullPath: '/produtos/$id'
+      preLoaderRoute: typeof ProdutosIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/editar-produto/$id': {
+      id: '/_authenticated/editar-produto/$id'
+      path: '/editar-produto/$id'
+      fullPath: '/editar-produto/$id'
+      preLoaderRoute: typeof AuthenticatedEditarProdutoIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedNovoProdutoRoute: typeof AuthenticatedNovoProdutoRoute
+  AuthenticatedPainelRoute: typeof AuthenticatedPainelRoute
+  AuthenticatedEditarProdutoIdRoute: typeof AuthenticatedEditarProdutoIdRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedNovoProdutoRoute: AuthenticatedNovoProdutoRoute,
+  AuthenticatedPainelRoute: AuthenticatedPainelRoute,
+  AuthenticatedEditarProdutoIdRoute: AuthenticatedEditarProdutoIdRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
+  ProdutoresIdRoute: ProdutoresIdRoute,
+  ProdutosIdRoute: ProdutosIdRoute,
+  ProdutosIndexRoute: ProdutosIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
