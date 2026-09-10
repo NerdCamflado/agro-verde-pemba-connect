@@ -18,10 +18,10 @@ import { ZONAS_PEMBA } from "@/lib/agroverde";
 import { categoriasQuery, produtosPublicosQuery } from "@/lib/queries";
 
 type Busca = {
-  q?: string;
-  categoria?: string;
-  zona?: string;
-  max?: number;
+  q?: string | undefined;
+  categoria?: string | undefined;
+  zona?: string | undefined;
+  max?: number | undefined;
 };
 
 export const Route = createFileRoute("/produtos/")({
@@ -50,13 +50,13 @@ export const Route = createFileRoute("/produtos/")({
 });
 
 function Catalogo() {
-  const navigate = useNavigate({ from: "/produtos" });
+  const navigate = useNavigate({ from: "/produtos/" });
   const filtros = Route.useSearch();
   const { data: produtos = [], isLoading } = useQuery(produtosPublicosQuery);
   const { data: categorias = [] } = useQuery(categoriasQuery);
 
   function actualizar(parcial: Partial<Busca>) {
-    navigate({ search: (anterior) => ({ ...anterior, ...parcial }) });
+    navigate({ search: (anterior: Busca) => ({ ...anterior, ...parcial }) });
   }
 
   const resultados = useMemo(() => {
