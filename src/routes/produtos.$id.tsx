@@ -149,6 +149,33 @@ function Detalhe() {
             </div>
           ) : null}
 
+          {ehAdmin ? (
+            <div className="mt-6 rounded-2xl border border-primary/40 bg-primary/5 p-5">
+              <h2 className="font-display text-lg font-semibold">Moderação</h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Estado actual:{" "}
+                <span className={`rounded-full px-2.5 py-1 text-xs ${CORES_ESTADO[produto.estado]}`}>
+                  {produto.estado}
+                </span>
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <Button
+                  size="sm"
+                  disabled={produto.estado === "Disponível"}
+                  onClick={() => moderar("Disponível")}
+                >
+                  Aprovar e tornar visível
+                </Button>
+                <Button size="sm" variant="outline" onClick={() => moderar("Rejeitado")}>
+                  Rejeitar
+                </Button>
+                <Button size="sm" variant="ghost" onClick={() => moderar("Pendente")}>
+                  Voltar a pendente
+                </Button>
+              </div>
+            </div>
+          ) : null}
+
           <div className="mt-6">
             <BotaoWhatsApp produto={produto} />
             <p className="mt-2 text-center text-xs text-muted-foreground">
