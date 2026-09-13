@@ -32,6 +32,21 @@ export const Route = createFileRoute("/produtos/$id")({
 function Detalhe() {
   const { id } = Route.useParams();
   const { data: produto, isLoading } = useQuery(produtoQuery(id));
+  const { utilizador } = useSessao();
+  const { data: ehAdmin } = useEhAdmin(utilizador?.id);
+  const queryClient = useQueryClient();
+
+  async function moderar(estado: "Disponível" | "Rejeitado" | "Pendente") {
+    const { error } = await supabase.from("produtos").update({ estado }).eq("id", id);
+    if (error) {
+      toast.error("Não foi possível actualizar o anúncio", { description: error.message });
+      return;
+    }
+    toast.success(estado === "Disponível" ? "Produto aprovado e visível" : `Produto marcado como ${estado}`);
+    queryClient.invalidateQueries({ queryKey: ["produto", id] });
+    queryClient.invalidateQueries({ queryKey: ["produtos"] });
+    queryClient.invalidateQueries({ queryKey: ["admin", "painel"] });
+  }
 
   if (isLoading) {
     return <p className="mx-auto max-w-6xl px-4 py-16 text-muted-foreground">A carregar...</p>;
