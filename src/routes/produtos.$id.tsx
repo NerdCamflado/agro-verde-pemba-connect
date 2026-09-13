@@ -1,9 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { CalendarDays, MapPin, Package, User } from "lucide-react";
+import { toast } from "sonner";
 
 import { BotaoWhatsApp } from "@/components/BotaoWhatsApp";
-import { formatarData, formatarMT } from "@/lib/agroverde";
+import { Button } from "@/components/ui/button";
+import { useEhAdmin, useSessao } from "@/hooks/useSessao";
+import { supabase } from "@/integrations/supabase/client";
+import { CORES_ESTADO, formatarData, formatarMT } from "@/lib/agroverde";
 import { produtoQuery } from "@/lib/queries";
 
 export const Route = createFileRoute("/produtos/$id")({
@@ -28,6 +32,21 @@ export const Route = createFileRoute("/produtos/$id")({
 function Detalhe() {
   const { id } = Route.useParams();
   const { data: produto, isLoading } = useQuery(produtoQuery(id));
+  const { utilizador } = useSessao();
+  const { data: ehAdmin } = useEhAdmin(utilizador?.id);
+  const queryClient = useQueryClient();
+
+  async function moderar(estado: "Disponível" | "Rejeitado" | "Pendente") {
+    const { error } = await supabase.from("produtos").update({ estado }).eq("id", id);
+    if (error) {
+      toast.error("Não foi possível actualizar o anúncio", { description: error.message });
+      return;
+    }
+    toast.success(estado === "Disponível" ? "Produto aprovado e visível" : `Produto marcado como ${estado}`);
+    queryClient.invalidateQueries({ queryKey: ["produto", id] });
+    queryClient.invalidateQueries({ queryKey: ["produtos"] });
+    queryClient.invalidateQueries({ queryKey: ["admin", "painel"] });
+  }
 
   if (isLoading) {
     return <p className="mx-auto max-w-6xl px-4 py-16 text-muted-foreground">A carregar...</p>;
@@ -127,6 +146,33 @@ function Detalhe() {
               >
                 Ver perfil e outros produtos
               </Link>
+            </div>
+          ) : null}
+
+          {ehAdmin ? (
+            <div className="mt-6 rounded-2xl border border-primary/40 bg-primary/5 p-5">
+              <h2 className="font-display text-lg font-semibold">Moderação</h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Estado actual:{" "}
+                <span className={`rounded-full px-2.5 py-1 text-xs ${CORES_ESTADO[produto.estado]}`}>
+                  {produto.estado}
+                </span>
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <Button
+                  size="sm"
+                  disabled={produto.estado === "Disponível"}
+                  onClick={() => moderar("Disponível")}
+                >
+                  Aprovar e tornar visível
+                </Button>
+                <Button size="sm" variant="outline" onClick={() => moderar("Rejeitado")}>
+                  Rejeitar
+                </Button>
+                <Button size="sm" variant="ghost" onClick={() => moderar("Pendente")}>
+                  Voltar a pendente
+                </Button>
+              </div>
             </div>
           ) : null}
 
