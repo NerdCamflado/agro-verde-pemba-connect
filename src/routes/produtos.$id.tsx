@@ -1,9 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { CalendarDays, MapPin, Package, User } from "lucide-react";
+import { toast } from "sonner";
 
 import { BotaoWhatsApp } from "@/components/BotaoWhatsApp";
-import { formatarData, formatarMT } from "@/lib/agroverde";
+import { Button } from "@/components/ui/button";
+import { useEhAdmin, useSessao } from "@/hooks/useSessao";
+import { supabase } from "@/integrations/supabase/client";
+import { CORES_ESTADO, formatarData, formatarMT } from "@/lib/agroverde";
 import { produtoQuery } from "@/lib/queries";
 
 export const Route = createFileRoute("/produtos/$id")({
